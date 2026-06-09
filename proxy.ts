@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
 
-const PUBLIC_ROUTES = ["/login", "/register"];
+const PUBLIC_ROUTES = ["/login", "/register", "/forgot-password", "/offline"];
 const AUTH_ROUTES = ["/login", "/register"];
 
 export default auth((req) => {
@@ -31,6 +31,9 @@ export default auth((req) => {
 
 export const config = {
   matcher: [
-    "/((?!api/auth|_next/static|_next/image|favicon.ico|public).*)",
+    // Run on all routes except auth endpoints, Next internals, and any file
+    // with an extension (manifest.webmanifest, sw.js, icons, etc.) so PWA
+    // assets stay publicly fetchable.
+    "/((?!api/auth|_next/static|_next/image|favicon.ico|.*\\..*).*)",
   ],
 };
