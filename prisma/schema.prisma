@@ -46,19 +46,28 @@ enum InventoryMovementType {
 
 model Company {
   id        String   @id @default(cuid())
-  name      String   @map("name")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   users       User[]
   categories  Category[]
   brands      Brand[]
   suppliers   Supplier[]
+
   products    Product[]
+
+  productVariants ProductVariant[]
+
   purchaseOrders PurchaseOrder[]
+  purchaseOrderItems PurchaseOrderItem[]
+
   salesOrders SalesOrder[]
+  salesOrderItems SalesOrderItem[]
+
   stockTransfers StockTransfer[]
-  movements   InventoryMovement[]
+
+  movements InventoryMovement[]
 
   @@map("companies")
 }
