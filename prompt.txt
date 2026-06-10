@@ -1,432 +1,215 @@
-Inventory Management System Requirements
+For Phase 1 (Company User Side), don't start with Products or Suppliers first.
 
-I am building a multi-company inventory management SaaS for footwear shops.
+Build in the order that removes dependencies and lets you test the system properly.
 
-The first company using it will be Step Enterprise.
+Step 1: Authentication & Authorization
 
-The system must be mobile-friendly, installable as a PWA, and optimized for daily inventory operations.
+Build:
 
-Tech Stack
-Frontend
-Next.js (App Router)
-TypeScript
-Tailwind CSS
-Shadcn UI
-Axios (with centralized axios instance)
-Zustand
-Backend
-Next.js Server Actions / Route Handlers
-Auth.js
-Zod Validation
-Database
-PostgreSQL
-Prisma ORM
-Additional
-Cloudinary
-Recharts
-Nodemailer
-User Roles
-SUPER_ADMIN
+Company Login (/login)
+Auth.js credentials login
+Session management
+Role-based middleware
+Protected routes
+
+Roles:
+
 ADMIN
 MANAGER
 STAFF
-SUPER_ADMIN
 
-Platform owner.
+After login:
 
-Can:
+/dashboard
+Step 2: Dashboard Layout & Navigation
 
-Access all companies
-Manage all companies
-Manage all users
-View everything
-Full system control
+Build:
 
-companyId = null
+Sidebar
+Header
+User profile dropdown
+Mobile navigation
+Dashboard home page
 
-ADMIN
+Create empty pages:
 
-Company owner.
+/dashboard
+/dashboard/products
+/dashboard/suppliers
+/dashboard/purchase-orders
+/dashboard/sales-orders
+/dashboard/transfers
+/dashboard/history
+/dashboard/reports
+/dashboard/users
+/dashboard/settings
 
-Can:
+Don't implement functionality yet.
 
-Manage products
-Manage inventory
-Manage suppliers
-Manage users
-Manage reports
-Manage settings
+Step 3: Company Settings
 
-Only inside their company.
+Build:
 
-MANAGER
+/dashboard/settings
 
-Can:
+Show:
 
-Manage stock
-Create purchase orders
-Receive stock
-Create sales
-Transfer stock
-View reports
+Company Name
+Company Code
+Logo
+Phone
+Address
 
-Cannot manage company settings or admins.
+This verifies your company data is loading correctly.
 
-STAFF
+Step 4: Brand Management
 
-Can:
+Build:
 
-View inventory
-Search products
-Create sales
-Update stock
+/dashboard/brands
 
-Cannot manage users or settings.
+CRUD:
 
-Company Model
-
-A company represents a business.
-
-Example:
-
-Step Enterprise
-
-Fields:
-
-id
-name
-code
-logoUrl
-email
-phone
-address
-city
-state
-country
-isActive
-createdAt
-updatedAt
-
-Example:
-
-name = Step Enterprise
-code = STEP
-Product Structure
-
-A product contains:
-
-Article No
-Article Name
-Brand
-Category
-Selling Price
-Default Purchase Price
-
-Example:
-
-Article No: CR001
-Article Name: Crocs Classic
-Product Variants
-
-Each product can have variants.
-
-Fields:
-
-Size
-Color
-Shop Quantity
-Godown Quantity
-Minimum Stock
+Create Brand
+Update Brand
+Delete Brand
+Search Brand
 
 Examples:
 
-7 Small - Black
-8 Small - Black
-9 Big - Blue
+Crocs
+Nike
+Adidas
+Step 5: Category Management
 
-Size is stored as:
+Build:
 
-size String
+/dashboard/categories
 
-Not:
+Examples:
 
-sizeNumber
-sizeType
-Stock Locations
+Sandals
+Sports Shoes
+Slippers
+Casual Shoes
+Step 6: Supplier Management
 
-Only two locations:
+Build:
 
-SHOP
-GODOWN
-Supplier Management
+/dashboard/suppliers
 
-Supplier contains:
+CRUD:
 
 Name
 Phone
 Email
 Address
-Purchase Order Flow
+Step 7: Product Management
 
-A purchase order can be:
+Now you have:
 
-DRAFT
-PENDING
-PARTIAL
-RECEIVED
-CANCELLED
+Brand
+Category
+Supplier
 
-Example:
+Build:
 
-Order:
+/dashboard/products
 
-100 pcs of 7 Small Black
+Features:
 
-Received:
-
-70 pcs
-
-Pending:
-
-30 pcs
-
-Pending quantity is calculated:
-
-orderedQty - receivedQty
-
-Not stored separately.
-
-Sales Order Flow
-
-Sales Order:
-
-Invoice Number
-Status
-Total Amount
-Date
-
-Sales Order Items:
-
-Variant
-Quantity
-Unit Price
-Total Price
+Product CRUD
+Variant CRUD
+Search
+Filters
 
 Example:
 
-2 pcs of 7 Small Black
-Stock Transfer Flow
+Crocs Classic
+ ├─ Size 7 Black
+ ├─ Size 8 Black
+ └─ Size 9 Blue
+Step 8: Inventory Movement Engine
 
-Transfer stock between:
+Create:
 
-SHOP
-GODOWN
+InventoryMovement
 
-Example:
+This is the heart of your system.
 
-Move 10 pcs
-
-FROM: GODOWN
-TO: SHOP
-Inventory Movement
-
-This is the audit/history table.
-
-Tracks:
+Track:
 
 PURCHASE
 SALE
 TRANSFER_IN
 TRANSFER_OUT
 ADJUSTMENT
-PURCHASE_RETURN
-SALES_RETURN
 
-Examples:
+Even before Purchase Orders.
 
-PURCHASE +100
-TRANSFER_OUT -10
-TRANSFER_IN +10
-SALE -2
+Step 9: Purchase Orders
 
-This table provides complete stock history.
+Build:
 
-Important Features
-Dashboard
+/dashboard/purchase-orders
 
-Show:
+Features:
 
-Total Products
-Total Stock
-Low Stock Items
-Recent Purchases
-Recent Sales
-Product Management
+Create PO
+Receive stock
+Partial receiving
+Auto InventoryMovement entries
+Step 10: Sales Orders
 
-CRUD
+Build:
 
-Search by:
+/dashboard/sales-orders
 
-Article No
-Article Name
-Brand
-Category
-Size
-Color
-Supplier Management
+Features:
 
-CRUD
+Create Invoice
+Reduce stock
+Record movement
+Step 11: Stock Transfers
 
-Purchase Orders
+Build:
 
-Create orders
+/dashboard/transfers
 
-Track:
+Move stock:
 
-Ordered Quantity
-Received Quantity
-Pending Quantity
-Sales Orders
+SHOP → GODOWN
+GODOWN → SHOP
+Step 12: Reports
 
-Create invoices
+Build:
 
-Reduce stock automatically
-
-Stock Transfers
-
-Transfer:
-
-Shop -> Godown
-Godown -> Shop
-Inventory History
-
-View complete movement history.
-
-Low Stock Alerts
-
-Use:
-
-minStock
-
-Trigger alert when stock goes below minimum.
-
-Reports
-
-Generate:
-
+/dashboard/reports
 Stock Report
 Sales Report
 Purchase Report
 Low Stock Report
-Supplier Report
-Naming Conventions
-Prisma
+Step 13: User Management
 
-Use:
+Build last:
 
-PascalCase -> Models
-camelCase -> Fields
+/dashboard/users
 
-Example:
+Because by now you'll know exactly what permissions each role needs.
 
-model Product {
-  articleNo String
-  articleName String
-  createdAt DateTime
-}
-PostgreSQL
+Final Build Order
+1. Authentication
+2. Dashboard Layout
+3. Company Settings
+4. Brands
+5. Categories
+6. Suppliers
+7. Products
+8. Inventory Movement
+9. Purchase Orders
+10. Sales Orders
+11. Stock Transfers
+12. Reports
+13. User Management
 
-Use:
-
-snake_case
-
-Example:
-
-products
-product_variants
-
-article_no
-article_name
-created_at
-
-Use:
-
-@map()
-@@map()
-IDs
-
-Keep:
-
-id String @id @default(cuid())
-
-Do NOT use:
-
-Int @id @default(autoincrement())
-Multi-Company
-
-Every business record belongs to a company through:
-
-companyId String
-
-Relation:
-
-company Company @relation(
-  fields: [companyId],
-  references: [id]
-)
-
-Keep using Company.id as the foreign key.
-
-Do NOT use company code as the foreign key.
-
-Company code is only for display purposes.
-
-Example:
-
-STEP
-ABC
-XYZ
-Main Goal
-
-Build a production-ready inventory management system that:
-
-Supports multiple companies
-Tracks stock accurately
-Tracks purchases and partial deliveries
-Tracks sales
-Tracks stock transfers
-Maintains inventory history
-Supports role-based access
-Is mobile-first
-Is easy enough for daily business use
-Can later be sold as a SaaS product
-
-This is the final summary of the requirements and architecture decisions we reached.
-
-
-Your new plan
-Phase 1: Company User Side
-
-After login, users will see only their company data:
-
-Dashboard
-Products
-Suppliers
-Purchase Orders
-Sales Orders
-Stock Transfer
-Inventory History
-Reports
-Low Stock Alerts
-
-This is the main working system for Step Enterprise and other companies.
-
-Phase 2: Super Admin Side later
-
-Super admin will do only this for now:
-
-Add company details in companies table
-Create company account
-Maybe create first admin user for that company
-
-So super admin is only for company setup at first.
+If I were building your footwear inventory SaaS from scratch, this is the exact order I would follow. It minimizes rework and keeps dependencies clean.

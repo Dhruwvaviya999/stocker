@@ -2,7 +2,9 @@ import { redirect } from "next/navigation";
 import type { UserRole } from "@prisma/client";
 
 import { getCurrentUser } from "@/lib/session";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { DashboardHeader } from "./_components/dashboard-header";
+import { DashboardSidebar } from "./_components/dashboard-sidebar";
 
 // Only company users may reach the dashboard. (Super Admin has its own area.)
 const ALLOWED_ROLES: UserRole[] = ["ADMIN", "MANAGER", "STAFF"];
@@ -17,11 +19,12 @@ export default async function DashboardLayout({
   if (!ALLOWED_ROLES.includes(user.role)) redirect("/login");
 
   return (
-    <div className="flex min-h-svh flex-col bg-background text-foreground">
-      <DashboardHeader user={user} />
-      <main className="mx-auto w-full max-w-8xl flex-1 px-4 py-6 sm:px-6 lg:px-8">
-        {children}
-      </main>
-    </div>
+    <SidebarProvider>
+      <DashboardSidebar role={user.role} />
+      <SidebarInset>
+        <DashboardHeader user={user} />
+        <main className="flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
