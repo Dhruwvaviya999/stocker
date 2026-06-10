@@ -8,6 +8,7 @@ import {
   Package,
   Settings,
   ShoppingCart,
+  Tag,
   Truck,
   Users,
   type LucideIcon,
@@ -55,6 +56,7 @@ export const DASHBOARD_NAV: NavGroup[] = [
     label: "Inventory",
     items: [
       { href: "/dashboard/products", label: "Products", icon: Package, roles: ALL_ROLES },
+      { href: "/dashboard/brands", label: "Brands", icon: Tag, roles: ALL_ROLES },
       {
         href: "/dashboard/suppliers",
         label: "Suppliers",
