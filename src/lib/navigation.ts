@@ -4,6 +4,7 @@ import {
   BarChart3,
   ClipboardList,
   History,
+  Layers,
   LayoutDashboard,
   Package,
   Settings,
@@ -57,6 +58,7 @@ export const DASHBOARD_NAV: NavGroup[] = [
     items: [
       { href: "/dashboard/products", label: "Products", icon: Package, roles: ALL_ROLES },
       { href: "/dashboard/brands", label: "Brands", icon: Tag, roles: ALL_ROLES },
+      { href: "/dashboard/categories", label: "Categories", icon: Layers, roles: ALL_ROLES },
       {
         href: "/dashboard/suppliers",
         label: "Suppliers",
