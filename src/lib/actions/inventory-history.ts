@@ -95,7 +95,7 @@ export interface HistoryItem {
   createdAt: string;
   createdBy: string | null;
   product: { articleNo: string; articleName: string };
-  variant: { size: string; color: string };
+  variant: { size: string; color: string; sizeType: "BIG" | "SMALL" };
   source: { type: string; ref: string | null };
 }
 
@@ -131,6 +131,7 @@ export async function getInventoryHistory(filter: HistoryFilter): Promise<Histor
           select: {
             size: true,
             color: true,
+            sizeType: true,
             product: { select: { articleNo: true, articleName: true } },
           },
         },
@@ -172,7 +173,11 @@ export async function getInventoryHistory(filter: HistoryFilter): Promise<Histor
         articleNo: m.variant.product.articleNo,
         articleName: m.variant.product.articleName,
       },
-      variant: { size: m.variant.size, color: m.variant.color },
+      variant: {
+        size: m.variant.size,
+        color: m.variant.color,
+        sizeType: m.variant.sizeType,
+      },
       source,
     };
   });

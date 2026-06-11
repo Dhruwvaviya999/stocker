@@ -42,6 +42,7 @@ export default async function TransfersPage() {
         id: true,
         size: true,
         color: true,
+        sizeType: true,
         shopQty: true,
         godownQty: true,
         product: { select: { articleNo: true, articleName: true } },
@@ -57,7 +58,7 @@ export default async function TransfersPage() {
     color: v.color,
     shopQty: v.shopQty,
     godownQty: v.godownQty,
-    label: `${v.product.articleNo} · ${v.product.articleName} · ${v.size}/${v.color}`,
+    label: `${v.product.articleNo} · ${v.product.articleName} · ${v.size}/${v.color} · ${v.sizeType === "BIG" ? "Big" : "Small"}`,
   }));
 
   const canManage = (MANAGE_ROLES as readonly string[]).includes(user.role);

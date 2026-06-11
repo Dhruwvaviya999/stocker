@@ -44,6 +44,7 @@ export default async function ProductsPage() {
             id: true,
             size: true,
             color: true,
+            sizeType: true,
             shopQty: true,
             godownQty: true,
             minStock: true,

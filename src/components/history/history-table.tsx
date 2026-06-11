@@ -53,6 +53,9 @@ export function HistoryTable({ items }: { items: HistoryItem[] }) {
                 </TableCell>
                 <TableCell className="whitespace-nowrap text-muted-foreground">
                   {m.variant.size} / {m.variant.color}
+                  <span className="ml-1 text-xs text-muted-foreground/70">
+                    ({m.variant.sizeType === "BIG" ? "Big" : "Small"})
+                  </span>
                 </TableCell>
                 <TableCell className="text-muted-foreground">
                   {m.location === "SHOP" ? "Shop" : "Godown"}

@@ -16,6 +16,7 @@ const VARIANT_SELECT = {
   id: true,
   size: true,
   color: true,
+  sizeType: true,
   shopQty: true,
   godownQty: true,
   minStock: true,
@@ -52,7 +53,7 @@ export async function PATCH(
   } catch (error) {
     if (error instanceof AuthError) return apiError(error.message, error.statusCode);
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
-      return apiError("This size + color variant already exists", 409);
+      return apiError("This size + color + size type variant already exists", 409);
     }
     return apiCatch(error);
   }

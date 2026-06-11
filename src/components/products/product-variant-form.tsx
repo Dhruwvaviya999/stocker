@@ -20,7 +20,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
-import type { VariantRow } from "./types";
+import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
+import { type VariantRow, SIZE_TYPE_OPTIONS } from "./types";
 
 interface ApiError {
   message?: string;
@@ -30,6 +31,7 @@ interface ApiError {
 const EMPTY: VariantInput = {
   size: "",
   color: "",
+  sizeType: "BIG",
   shopQty: 0,
   godownQty: 0,
   minStock: 5,
@@ -72,6 +74,7 @@ export function ProductVariantForm({
           ? {
               size: variant.size,
               color: variant.color,
+              sizeType: variant.sizeType,
               shopQty: variant.shopQty,
               godownQty: variant.godownQty,
               minStock: variant.minStock,
@@ -119,12 +122,13 @@ export function ProductVariantForm({
           <DialogHeader>
             <DialogTitle>{isEdit ? "Edit variant" : "Add variant"}</DialogTitle>
             <DialogDescription>
-              Size and color identify the variant; stock is tracked per location.
+              Size, color and size type identify the variant; stock is tracked
+              per location.
             </DialogDescription>
           </DialogHeader>
 
           <FieldGroup className="py-4">
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-3">
               <Field data-invalid={!!errors.size}>
                 <FieldLabel htmlFor="v-size">Size</FieldLabel>
                 <Input
@@ -148,6 +152,22 @@ export function ProductVariantForm({
                   {...register("color")}
                 />
                 <FieldError errors={errors.color ? [errors.color] : undefined} />
+              </Field>
+
+              <Field>
+                <FieldLabel htmlFor="v-size-type">Size type</FieldLabel>
+                <NativeSelect
+                  id="v-size-type"
+                  className="w-full"
+                  disabled={isSubmitting}
+                  {...register("sizeType")}
+                >
+                  {SIZE_TYPE_OPTIONS.map((o) => (
+                    <NativeSelectOption key={o.value} value={o.value}>
+                      {o.label}
+                    </NativeSelectOption>
+                  ))}
+                </NativeSelect>
               </Field>
             </div>
 

@@ -2,10 +2,20 @@
 // (Prisma Decimal is converted at the SSR/API boundary) so the client never
 // has to deal with Decimal objects.
 
+export type SizeType = "BIG" | "SMALL";
+
+export const SIZE_TYPE_OPTIONS: { value: SizeType; label: string }[] = [
+  { value: "BIG", label: "Big" },
+  { value: "SMALL", label: "Small" },
+];
+
+export const sizeTypeLabel = (t: SizeType) => (t === "BIG" ? "Big" : "Small");
+
 export interface VariantRow {
   id: string;
   size: string;
   color: string;
+  sizeType: SizeType;
   shopQty: number;
   godownQty: number;
   minStock: number;

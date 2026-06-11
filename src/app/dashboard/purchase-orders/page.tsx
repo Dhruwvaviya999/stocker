@@ -50,6 +50,7 @@ export default async function PurchaseOrdersPage() {
         id: true,
         size: true,
         color: true,
+        sizeType: true,
         product: {
           select: {
             articleNo: true,
@@ -68,7 +69,7 @@ export default async function PurchaseOrdersPage() {
     size: v.size,
     color: v.color,
     defaultPurchasePrice: Number(v.product.defaultPurchasePrice),
-    label: `${v.product.articleNo} · ${v.product.articleName} · ${v.size}/${v.color}`,
+    label: `${v.product.articleNo} · ${v.product.articleName} · ${v.size}/${v.color} · ${v.sizeType === "BIG" ? "Big" : "Small"}`,
   }));
 
   const canManage = (MANAGE_ROLES as readonly string[]).includes(user.role);

@@ -12,7 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { type VariantRow, variantTotal } from "./types";
+import { type VariantRow, variantTotal, sizeTypeLabel } from "./types";
 
 /** Variant list for a single product, shown inside the variants dialog. */
 export function ProductVariantTable({
@@ -41,6 +41,7 @@ export function ProductVariantTable({
           <TableRow>
             <TableHead>Size</TableHead>
             <TableHead>Color</TableHead>
+            <TableHead>Type</TableHead>
             <TableHead className="text-center">Shop</TableHead>
             <TableHead className="text-center">Godown</TableHead>
             <TableHead className="text-center">Total</TableHead>
@@ -59,6 +60,9 @@ export function ProductVariantTable({
               <TableRow key={v.id}>
                 <TableCell className="font-medium">{v.size}</TableCell>
                 <TableCell>{v.color}</TableCell>
+                <TableCell>
+                  <Badge variant="outline">{sizeTypeLabel(v.sizeType)}</Badge>
+                </TableCell>
                 <TableCell className="text-center tabular-nums">{v.shopQty}</TableCell>
                 <TableCell className="text-center tabular-nums">
                   {v.godownQty}

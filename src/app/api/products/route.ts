@@ -88,6 +88,7 @@ export async function POST(req: NextRequest) {
             companyId,
             size: v.size,
             color: v.color,
+            sizeType: v.sizeType,
             shopQty: v.shopQty,
             godownQty: v.godownQty,
             minStock: v.minStock,
@@ -105,7 +106,10 @@ export async function POST(req: NextRequest) {
       const target = String(error.meta?.target ?? "");
       if (target.includes("article"))
         return apiError("A product with this article number already exists", 409);
-      return apiError("Duplicate variant: each size + color must be unique", 409);
+      return apiError(
+        "Duplicate variant: each size + color + size type must be unique",
+        409,
+      );
     }
     return apiCatch(error);
   }

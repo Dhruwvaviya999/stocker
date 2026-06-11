@@ -42,6 +42,7 @@ export default async function SalesOrdersPage() {
         id: true,
         size: true,
         color: true,
+        sizeType: true,
         shopQty: true,
         godownQty: true,
         product: {
@@ -60,7 +61,7 @@ export default async function SalesOrdersPage() {
     sellingPrice: Number(v.product.sellingPrice),
     shopQty: v.shopQty,
     godownQty: v.godownQty,
-    label: `${v.product.articleNo} · ${v.product.articleName} · ${v.size}/${v.color}`,
+    label: `${v.product.articleNo} · ${v.product.articleName} · ${v.size}/${v.color} · ${v.sizeType === "BIG" ? "Big" : "Small"}`,
   }));
 
   // STAFF may create sales (per the role matrix); managing (complete/cancel/

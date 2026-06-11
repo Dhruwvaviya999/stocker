@@ -26,7 +26,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
-import type { Option, ProductRow } from "./types";
+import { type Option, type ProductRow, SIZE_TYPE_OPTIONS } from "./types";
 
 // Form schema: variants are optional at the form level (only used in create
 // mode); the server enforces "at least one variant" on create.
@@ -44,7 +44,14 @@ interface ApiError {
   data?: { errors?: Record<string, string[]> } | null;
 }
 
-const EMPTY_VARIANT = { size: "", color: "", shopQty: 0, godownQty: 0, minStock: 5 };
+const EMPTY_VARIANT = {
+  size: "",
+  color: "",
+  sizeType: "BIG" as const,
+  shopQty: 0,
+  godownQty: 0,
+  minStock: 5,
+};
 
 function defaultsFor(product: ProductRow | null): FormValues {
   if (!product) {
@@ -315,64 +322,118 @@ export function ProductForm({
 
                 <div className="space-y-2">
                   {fields.map((row, i) => (
-                    <div
-                      key={row.id}
-                      className="grid grid-cols-2 gap-2 rounded-md border p-2 sm:grid-cols-[1fr_1fr_70px_70px_70px_auto]"
-                    >
-                      <Input
-                        placeholder="Size"
-                        aria-label="Size"
-                        disabled={isSubmitting}
-                        aria-invalid={!!errors.variants?.[i]?.size}
-                        {...register(`variants.${i}.size`)}
-                      />
-                      <Input
-                        placeholder="Color"
-                        aria-label="Color"
-                        disabled={isSubmitting}
-                        aria-invalid={!!errors.variants?.[i]?.color}
-                        {...register(`variants.${i}.color`)}
-                      />
-                      <Input
-                        type="number"
-                        min={0}
-                        placeholder="Shop"
-                        aria-label="Shop qty"
-                        disabled={isSubmitting}
-                        {...register(`variants.${i}.shopQty`)}
-                      />
-                      <Input
-                        type="number"
-                        min={0}
-                        placeholder="Godown"
-                        aria-label="Godown qty"
-                        disabled={isSubmitting}
-                        {...register(`variants.${i}.godownQty`)}
-                      />
-                      <Input
-                        type="number"
-                        min={0}
-                        placeholder="Min"
-                        aria-label="Min stock"
-                        disabled={isSubmitting}
-                        {...register(`variants.${i}.minStock`)}
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="size-9 text-muted-foreground hover:text-destructive"
-                        aria-label="Remove variant"
-                        disabled={isSubmitting || fields.length === 1}
-                        onClick={() => remove(i)}
-                      >
-                        <Trash2 className="size-4" />
-                      </Button>
+                    <div key={row.id} className="rounded-md border p-3">
+                      <div className="mb-2 flex items-center justify-between">
+                        <span className="text-xs font-semibold text-muted-foreground">
+                          Variant {i + 1}
+                        </span>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 gap-1 text-muted-foreground hover:text-destructive"
+                          aria-label={`Remove variant ${i + 1}`}
+                          disabled={isSubmitting || fields.length === 1}
+                          onClick={() => remove(i)}
+                        >
+                          <Trash2 className="size-3.5" />
+                          Remove
+                        </Button>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+                        <div className="space-y-1">
+                          <span className="text-xs font-medium text-muted-foreground">
+                            Size
+                          </span>
+                          <Input
+                            placeholder="7"
+                            aria-label="Size"
+                            disabled={isSubmitting}
+                            aria-invalid={!!errors.variants?.[i]?.size}
+                            {...register(`variants.${i}.size`)}
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <span className="text-xs font-medium text-muted-foreground">
+                            Color
+                          </span>
+                          <Input
+                            placeholder="Black"
+                            aria-label="Color"
+                            disabled={isSubmitting}
+                            aria-invalid={!!errors.variants?.[i]?.color}
+                            {...register(`variants.${i}.color`)}
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <span className="text-xs font-medium text-muted-foreground">
+                            Size type
+                          </span>
+                          <NativeSelect
+                            className="w-full"
+                            aria-label="Size type"
+                            disabled={isSubmitting}
+                            {...register(`variants.${i}.sizeType`)}
+                          >
+                            {SIZE_TYPE_OPTIONS.map((o) => (
+                              <NativeSelectOption key={o.value} value={o.value}>
+                                {o.label}
+                              </NativeSelectOption>
+                            ))}
+                          </NativeSelect>
+                        </div>
+
+                        <div className="space-y-1">
+                          <span className="text-xs font-medium text-muted-foreground">
+                            Shop qty
+                          </span>
+                          <Input
+                            type="number"
+                            min={0}
+                            placeholder="0"
+                            aria-label="Shop quantity"
+                            disabled={isSubmitting}
+                            {...register(`variants.${i}.shopQty`)}
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <span className="text-xs font-medium text-muted-foreground">
+                            Godown qty
+                          </span>
+                          <Input
+                            type="number"
+                            min={0}
+                            placeholder="0"
+                            aria-label="Godown quantity"
+                            disabled={isSubmitting}
+                            {...register(`variants.${i}.godownQty`)}
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <span className="text-xs font-medium text-muted-foreground">
+                            Min stock
+                          </span>
+                          <Input
+                            type="number"
+                            min={0}
+                            placeholder="5"
+                            aria-label="Minimum stock"
+                            disabled={isSubmitting}
+                            {...register(`variants.${i}.minStock`)}
+                          />
+                        </div>
+                      </div>
                     </div>
                   ))}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Size &amp; color must be unique. You can add more variants later.
+                  Size + color + size type must be unique. You can add more
+                  variants later.
                 </p>
               </div>
             )}

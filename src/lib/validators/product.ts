@@ -4,6 +4,8 @@ import { z } from "zod";
 // Stock lives on the variant: shopQty + godownQty are the two stock locations
 // (SHOP / GODOWN). minStock is the per-variant low-stock threshold used later
 // for alerts. Size is stored as a free string per the project rules.
+export const SIZE_TYPES = ["BIG", "SMALL"] as const;
+
 export const variantSchema = z.object({
   size: z.string().trim().min(1, "Size is required").max(20, "Size is too long"),
   color: z
@@ -11,6 +13,9 @@ export const variantSchema = z.object({
     .trim()
     .min(1, "Color is required")
     .max(30, "Color is too long"),
+  // Size category. Same size + color may exist as both BIG and SMALL, so it is
+  // part of the variant's identity (see @@unique in schema.prisma).
+  sizeType: z.enum(SIZE_TYPES).default("BIG"),
   shopQty: z.coerce.number().int("Whole numbers only").min(0).max(1_000_000),
   godownQty: z.coerce.number().int("Whole numbers only").min(0).max(1_000_000),
   minStock: z.coerce.number().int("Whole numbers only").min(0).max(1_000_000),

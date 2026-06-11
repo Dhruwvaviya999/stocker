@@ -11,6 +11,7 @@ export const PRODUCT_INCLUDE = {
       id: true,
       size: true,
       color: true,
+      sizeType: true,
       shopQty: true,
       godownQty: true,
       minStock: true,
