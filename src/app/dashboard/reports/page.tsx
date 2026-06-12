@@ -20,7 +20,7 @@ export default async function ReportsPage({
 
   if (!user?.companyId) {
     return (
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-7xl">
         <Alert variant="destructive">
           <TriangleAlert />
           <AlertTitle>No company associated</AlertTitle>
@@ -35,7 +35,7 @@ export default async function ReportsPage({
 
   if (!(ALLOWED_ROLES as readonly string[]).includes(user.role)) {
     return (
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-7xl">
         <Alert>
           <Lock />
           <AlertTitle>Reports are restricted</AlertTitle>

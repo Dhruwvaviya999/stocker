@@ -46,7 +46,8 @@ export async function POST(req: NextRequest) {
     const parsed = registerCompanySchema.safeParse(body);
     if (!parsed.success) return apiValidationError(parsed.error);
 
-    const { companyName, adminName, adminEmail, adminPassword } = parsed.data;
+    const { companyName, adminName, adminUsername, adminEmail, adminPassword } =
+      parsed.data;
 
     // Email is globally unique across all users.
     const existingUser = await prisma.user.findUnique({
@@ -69,12 +70,13 @@ export async function POST(req: NextRequest) {
       const admin = await tx.user.create({
         data: {
           name: adminName,
+          username: adminUsername,
           email: adminEmail,
           password: hashedPassword,
           role: "ADMIN",
           companyId: company.id,
         },
-        select: { id: true, name: true, email: true, role: true },
+        select: { id: true, name: true, username: true, email: true, role: true },
       });
 
       return { company, admin };

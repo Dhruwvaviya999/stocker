@@ -53,6 +53,7 @@ export default function RegisterCompanyPage() {
     defaultValues: {
       companyName: "",
       adminName: "",
+      adminUsername: "",
       adminEmail: "",
       adminPassword: "",
     },
@@ -137,7 +138,7 @@ export default function RegisterCompanyPage() {
               <FieldSeparator>Company admin</FieldSeparator>
 
               <Field data-invalid={!!errors.adminName}>
-                <FieldLabel htmlFor="adminName">Admin name</FieldLabel>
+                <FieldLabel htmlFor="adminName">Admin Name</FieldLabel>
                 <Input
                   id="adminName"
                   placeholder="Jane Doe"
@@ -151,8 +152,27 @@ export default function RegisterCompanyPage() {
                 />
               </Field>
 
+              <Field data-invalid={!!errors.adminUsername}>
+                <FieldLabel htmlFor="adminUsername">Admin Username</FieldLabel>
+                <Input
+                  id="adminUsername"
+                  placeholder="e.g. admin"
+                  autoComplete="off"
+                  autoCapitalize="none"
+                  spellCheck={false}
+                  disabled={isSubmitting}
+                  aria-invalid={!!errors.adminUsername}
+                  {...register("adminUsername")}
+                />
+                <FieldError
+                  errors={
+                    errors.adminUsername ? [errors.adminUsername] : undefined
+                  }
+                />
+              </Field>
+
               <Field data-invalid={!!errors.adminEmail}>
-                <FieldLabel htmlFor="adminEmail">Admin email</FieldLabel>
+                <FieldLabel htmlFor="adminEmail">Admin Email</FieldLabel>
                 <Input
                   id="adminEmail"
                   type="email"
@@ -168,7 +188,7 @@ export default function RegisterCompanyPage() {
               </Field>
 
               <Field data-invalid={!!errors.adminPassword}>
-                <FieldLabel htmlFor="adminPassword">Temporary password</FieldLabel>
+                <FieldLabel htmlFor="adminPassword">Admin Password</FieldLabel>
                 <div className="relative">
                   <Input
                     id="adminPassword"

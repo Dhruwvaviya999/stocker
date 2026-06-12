@@ -1,4 +1,4 @@
-import { Prisma, type UserRole } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 import { prisma } from "@/lib/prisma";
@@ -48,23 +48,15 @@ export type UserDTO = ReturnType<typeof mapUser>;
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
-// Auto-generate a company-unique username from the role: admin01, manager02, …
-async function generateUsername(
-  tx: Prisma.TransactionClient,
-  companyId: string,
-  role: UserRole,
-): Promise<string> {
-  const prefix = role.toLowerCase(); // admin / manager / staff
-  const base = await tx.user.count({ where: { companyId, role } });
-  for (let i = 1; i <= 200; i++) {
-    const username = `${prefix}${String(base + i).padStart(2, "0")}`;
-    const clash = await tx.user.findFirst({
-      where: { companyId, username },
-      select: { id: true },
-    });
-    if (!clash) return username;
+// Usernames are unique only *within* a company (@@unique([companyId, username])).
+async function assertUsernameFree(companyId: string, username: string) {
+  const existing = await prisma.user.findFirst({
+    where: { companyId, username },
+    select: { id: true },
+  });
+  if (existing) {
+    throw new UserError("That username is already taken", 409);
   }
-  throw new UserError("Could not generate a username", 500);
 }
 
 // Email is globally unique; make sure it isn't already used by someone else.
@@ -113,25 +105,24 @@ export async function createUser(args: {
   const data = parsed.data;
   const { companyId } = args;
 
+  await assertUsernameFree(companyId, data.username);
+
   const email = data.email?.trim() || null;
   if (email) await assertEmailFree(email);
 
   const passwordHash = await bcrypt.hash(data.password, 12);
 
-  const user = await prisma.$transaction(async (tx) => {
-    const username = await generateUsername(tx, companyId, data.role);
-    return tx.user.create({
-      data: {
-        companyId,
-        name: data.name,
-        email,
-        username,
-        password: passwordHash,
-        role: data.role,
-        isActive: data.isActive,
-      },
-      select: USER_SELECT,
-    });
+  const user = await prisma.user.create({
+    data: {
+      companyId,
+      name: data.name,
+      email,
+      username: data.username,
+      password: passwordHash,
+      role: data.role,
+      isActive: data.isActive,
+    },
+    select: USER_SELECT,
   });
 
   return mapUser(user);

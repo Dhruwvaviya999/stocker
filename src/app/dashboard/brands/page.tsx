@@ -45,7 +45,7 @@ export default async function BrandsPage() {
   const canManage = (MANAGE_ROLES as readonly string[]).includes(user.role);
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6">
+    <div className="mx-auto max-w-7xl space-y-6">
       <div className="space-y-1">
         <h1 className="text-2xl font-semibold tracking-tight">Brands</h1>
         <p className="text-sm text-muted-foreground">

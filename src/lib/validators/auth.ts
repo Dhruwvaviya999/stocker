@@ -4,7 +4,7 @@ import { z } from "zod";
 // A company user signs in with their company code, username and password.
 // Usernames are unique only *within* a company, so the company code is what
 // scopes the lookup. Company code is uppercased; username is lowercased to
-// match how usernames are generated (admin01, manager01, staff01, …).
+// match how usernames are stored (always lowercase).
 export const companyLoginSchema = z.object({
   companyCode: z
     .string()

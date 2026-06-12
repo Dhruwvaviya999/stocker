@@ -17,7 +17,7 @@ export default async function ProductsPage() {
 
   if (!user?.companyId) {
     return (
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-7xl">
         <Alert variant="destructive">
           <TriangleAlert />
           <AlertTitle>No company associated</AlertTitle>
@@ -83,7 +83,7 @@ export default async function ProductsPage() {
   const canManage = (MANAGE_ROLES as readonly string[]).includes(user.role);
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6">
+    <div className="mx-auto max-w-7xl space-y-6">
       <div className="space-y-1">
         <h1 className="text-2xl font-semibold tracking-tight">Products</h1>
         <p className="text-sm text-muted-foreground">

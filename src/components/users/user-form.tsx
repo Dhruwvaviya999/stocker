@@ -12,7 +12,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Spinner } from "@/components/ui/spinner";
-import { Badge } from "@/components/ui/badge";
 import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
 import {
   Dialog,
@@ -35,6 +34,7 @@ interface ApiError {
 function defaultsFor(user: UserRow | null): UpdateUserInput {
   return {
     name: user?.name ?? "",
+    username: user?.username ?? "",
     email: user?.email ?? "",
     role: (user?.role as UpdateUserInput["role"]) ?? "STAFF",
     isActive: user?.isActive ?? true,
@@ -82,12 +82,20 @@ export function UserForm({
       return;
     }
 
+    const username = values.username?.trim() ?? "";
+    if (!isEdit && !username) {
+      setError("username", { message: "Username is required" });
+      return;
+    }
+
     const payload = {
       name: values.name,
       email: values.email ?? "",
       role: values.role,
       isActive: values.isActive,
       ...(password ? { password } : {}),
+      // Username is set only on create; it isn't editable afterwards.
+      ...(isEdit ? {} : { username }),
     };
 
     try {
@@ -108,7 +116,7 @@ export function UserForm({
       const error = err as ApiError;
       const fieldErrors = error.data?.errors;
       if (fieldErrors) {
-        for (const key of ["name", "email", "password", "role"] as const) {
+        for (const key of ["name", "username", "email", "password", "role"] as const) {
           if (fieldErrors[key]?.[0]) setError(key, { message: fieldErrors[key][0] });
         }
         return;
@@ -126,7 +134,7 @@ export function UserForm({
             <DialogDescription>
               {isEdit
                 ? `Update this user's details${user?.username ? ` (${user.username})` : ""}.`
-                : "Create a login for a team member. The username is generated from the role."}
+                : "Create a login for a team member. Choose a username unique to your company."}
             </DialogDescription>
           </DialogHeader>
 
@@ -143,6 +151,25 @@ export function UserForm({
               />
               <FieldError errors={errors.name ? [errors.name] : undefined} />
             </Field>
+
+            {!isEdit && (
+              <Field data-invalid={!!errors.username}>
+                <FieldLabel htmlFor="u-username">Username</FieldLabel>
+                <Input
+                  id="u-username"
+                  placeholder="e.g. manager01"
+                  autoComplete="off"
+                  autoCapitalize="none"
+                  spellCheck={false}
+                  disabled={isSubmitting}
+                  aria-invalid={!!errors.username}
+                  {...register("username")}
+                />
+                <FieldError
+                  errors={errors.username ? [errors.username] : undefined}
+                />
+              </Field>
+            )}
 
             <div className="grid gap-4 sm:grid-cols-2">
               <Field data-invalid={!!errors.role}>
@@ -223,15 +250,6 @@ export function UserForm({
                 </div>
               )}
             />
-
-            {!isEdit && (
-              <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                Username preview:
-                <Badge variant="outline" className="font-mono">
-                  e.g. staff01
-                </Badge>
-              </p>
-            )}
           </div>
 
           <DialogFooter>

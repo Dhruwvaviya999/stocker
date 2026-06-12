@@ -1,8 +1,11 @@
 import { z } from "zod";
 
+import { usernameField } from "@/lib/validators/user";
+
 // ── Register company (Super Admin only) ────────────────────────────────────
 // Creates a Company together with its first ADMIN user so the company can log
-// in immediately. The company `code` is auto-generated server-side.
+// in immediately. The company `code` is auto-generated server-side, while the
+// admin's username is chosen here (unique within the new company).
 export const registerCompanySchema = z.object({
   companyName: z
     .string()
@@ -12,6 +15,7 @@ export const registerCompanySchema = z.object({
     .string()
     .min(2, "Admin name must be at least 2 characters")
     .max(100, "Name is too long"),
+  adminUsername: usernameField,
   adminEmail: z
     .string()
     .min(1, "Email is required")
